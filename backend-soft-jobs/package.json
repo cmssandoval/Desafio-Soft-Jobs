@@ -4,13 +4,13 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "",
-    "dev": ""
+    "start": "node index.js",
+    "dev": "nodemon index.js"
   },
   "keywords": [],
   "author": "cmssandoval",
   "license": "ISC",
-  "type": "commonjs",
+  "type": "module",
   "dependencies": {
     "bcrypt": "^6.0.0",
     "cors": "^2.8.6",
