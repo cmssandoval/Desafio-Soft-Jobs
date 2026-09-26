@@ -11,9 +11,16 @@ const readUserByEmail = async ({ email }) => {
     }
 };
 
-const addUser = async ({ email, password }) => {
+const addUser = async ({ email, password, rol, lenguage }) => {
     try {
-        return;
+        const query =
+        `INSERT INTO usuarios (id, email, password, rol, lenguage)
+        VALUES (DEFAULT, $1, $2, $3, $4) RETURNING email
+        `;
+        const encryptedPassword = bcrypt.hashSync( password, SALT_OR_ROUNDS );
+        const values = [ email, encryptedPassword, rol, lenguage ];
+        const { rows } = await pool.query( query, values );
+        return rows[0];
     } catch (error) {
         throw error;
     }
