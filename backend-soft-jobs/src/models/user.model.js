@@ -28,7 +28,13 @@ const addUser = async ({ email, password, rol, lenguage }) => {
 
 const validateUser = async ({ email, password }) => {
     try {
-        return;
+        const { rows: [user] } = await pool.query('SELECT * FROM usuarios WHERE email = $1', [email]);
+        if ( !user ) throw { message: 'User not found' };
+        
+        const isPasswordMatch = bcrypt.compareSync( password, user.password );
+        if ( !isPasswordMatch ) throw { message: 'Invalid credentials' };
+        
+        return user.email;
     } catch (error) {
         throw error;
     }
