@@ -8,16 +8,10 @@ const create = async ( req, res ) => {
     try {
         const { email, password, rol, lenguage } = req.body;
         const userRegistered = await userModel.addUser({ email, password, rol, lenguage });
-        return res.status(201).json({
-            message: 'User registered successfully',
-            user: userRegistered,
-        });
+        return res.status(201).json({ userRegistered });
     } catch (error) {
         console.log(error);
-        return res.status(500).json({
-            message: 'Internal server error',
-            data: error,
-        });        
+        return res.status(500).json({ message: 'Internal server error' });        
     }
 };
 
@@ -28,10 +22,7 @@ const login = async ( req, res ) => {
         
         const token = jwt.sign( validUser, JWT_SECRET );
         
-        return res.status(201).json({
-            message: 'User loged successfully',
-            token,
-        });
+        return res.status(201).json({ token });
     } catch (error) {
         console.log(error);
         return res.status(500).json({ message: error.message });        
@@ -40,11 +31,21 @@ const login = async ( req, res ) => {
 
 const read = async ( req, res ) => {
     try {
-        const { email } = req.body;
-        const user = await userModel.readUserByEmail({ email });
-        return res.status(500).json({ message: 'Not implemented.' });
+        const token = req.headers.authorization?.split(" ")[1];
+        if ( !token ) return res.status(401).json({ message: 'No token provided' });
+
+        jwt.verify( token, JWT_SECRET );
+        // Decode es innecesario, lo agrego solo por los requerimientos del desafío.
+        // Verify ya devuelve el payload decodificado en caso de que su firma sea legítima.
+        const payload = jwt.decode( token );
+
+        const user = await userModel.readUserByEmail({ payload });
+
+        return res.status(200).json( user );
     } catch (error) {
-        return res.status(500).json({ message: 'Not implemented.' });        
+        console.log(error);
+        if ( error.name === 'JsonWebTokenError' ) return res.status(500).json({ message: 'Invalid token' });      
+        return res.status(500).json({ message: 'Internal server error' });        
     }
 };
 

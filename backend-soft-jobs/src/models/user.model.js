@@ -3,9 +3,11 @@ import bcrypt from 'bcrypt';
 
 const SALT_OR_ROUNDS = 10;
 
-const readUserByEmail = async ({ email }) => {
-    try {
-        return;
+const readUserByEmail = async ({ payload }) => {
+    try {        
+        const query = 'SELECT email, rol, lenguage FROM usuarios WHERE email = $1';
+        const { rows } = await pool.query( query, [payload] );
+        return rows;
     } catch (error) {
         throw error;
     }
@@ -19,8 +21,8 @@ const addUser = async ({ email, password, rol, lenguage }) => {
         `;
         const encryptedPassword = bcrypt.hashSync( password, SALT_OR_ROUNDS );
         const values = [ email, encryptedPassword, rol, lenguage ];
-        const { rows } = await pool.query( query, values );
-        return rows[0];
+        const { rows: [user] } = await pool.query( query, values );
+        return user;
     } catch (error) {
         throw error;
     }
