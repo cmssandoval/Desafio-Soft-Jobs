@@ -4,15 +4,16 @@ import cors from 'cors';
 
 import userRoute from './src/routes/user.route.js';
 
+import queryReporter from './src/middlewares/queryReporter.middleware.js';
 import invalidRouteMiddleware from './src/middlewares/invalidRoute.middleware.js';
 import errorMiddleware from './src/middlewares/error.middleware.js'
 import actualDateAndTime from './src/utils/actualDateAndTime.js';
-
 
 const app = express();
 
 app.use(express.json());
 app.use(cors());
+app.use(queryReporter);
 
 app.get('/', ( req, res ) => {
     return res.status(200).json({
