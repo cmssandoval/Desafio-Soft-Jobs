@@ -1,7 +1,8 @@
 import express from 'express';
 import cors from 'cors';
 import 'dotenv/config';
-import { actualDateAndTime } from './src/utils/actualDateAndTime.js';
+
+import actualDateAndTime from './src/utils/actualDateAndTime.js';
 
 import userRoute from './src/routes/user.route.js';
 
@@ -22,7 +23,7 @@ app.listen( PORT, () => {
 app.get('/', ( req, res ) => {
     return res.status(200).json({
         status: 'online',
-        message: 'API soft-jobs available',
+        message: 'API soft-jobs is currently working!',
         time: actualDateAndTime,
     });
 });

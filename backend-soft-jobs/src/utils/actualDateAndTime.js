@@ -8,5 +8,7 @@ const dateOptions = {
     hourCycle: 'h23'
 };
 
-export const actualDateAndTime = new Date(Date.now())
-    .toLocaleDateString('es-ES', dateOptions)
+const actualDateAndTime = new Date(Date.now())
+    .toLocaleDateString('es-ES', dateOptions);
+
+export default actualDateAndTime;
