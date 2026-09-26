@@ -1,7 +1,8 @@
 import getDatabaseError from '../lib/errors/database.error.js';
 
 const errorMiddleware = ( err, req, res, next ) => {
-    
+    console.log(err);
+
     if ( err.code ) {
         const { code, message } = getDatabaseError( err.code );
         return res.status(code).json({ message });
