@@ -18,8 +18,7 @@ app.listen( PORT, () => {
     console.log(`Server is ON at http://localhost:${PORT}/`);
 });
 
-//! Create asyncHandler, errorHandler y authHandler middlewares.
-//! Create loginController.
+//! Create asyncHandler, errorHandler middlewares.
 app.get('/', ( req, res ) => {
     return res.status(200).json({
         status: 'online',

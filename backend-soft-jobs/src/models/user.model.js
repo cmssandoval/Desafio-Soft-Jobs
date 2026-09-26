@@ -3,10 +3,10 @@ import bcrypt from 'bcrypt';
 
 const SALT_OR_ROUNDS = 10;
 
-const readUserByEmail = async ({ payload }) => {
+const readUserByEmail = async ( user ) => {
     try {        
         const query = 'SELECT email, rol, lenguage FROM usuarios WHERE email = $1';
-        const { rows } = await pool.query( query, [payload] );
+        const { rows } = await pool.query( query, [user] );
         return rows;
     } catch (error) {
         throw error;
