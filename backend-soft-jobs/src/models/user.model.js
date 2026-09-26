@@ -15,6 +15,11 @@ const readUserByEmail = async ({ payload }) => {
 
 const addUser = async ({ email, password, rol, lenguage }) => {
     try {
+        const {rows: [existingUser] } = await pool.query(
+            'SELECT email FROM usuarios WHERE email = $1', [email]
+        );
+        if ( existingUser ) throw { message: 'User already exists' };
+
         const query =
         `INSERT INTO usuarios (id, email, password, rol, lenguage)
         VALUES (DEFAULT, $1, $2, $3, $4) RETURNING email
