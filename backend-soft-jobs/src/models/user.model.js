@@ -15,10 +15,15 @@ const readUserByEmail = async ( user ) => {
 
 const addUser = async ({ email, password, rol, lenguage }) => {
     try {
-        const {rows: [existingUser] } = await pool.query(
+        const { rows: [existingUser] } = await pool.query(
             'SELECT email FROM usuarios WHERE email = $1', [email]
         );
-        if ( existingUser ) throw { message: 'User already exists' };
+        
+        if ( existingUser ) {
+            const error = new Error(`User ${email} already exists`);
+            error.status = 401;
+            throw error;
+        }
 
         const query =
         `INSERT INTO usuarios (id, email, password, rol, lenguage)
@@ -36,11 +41,19 @@ const addUser = async ({ email, password, rol, lenguage }) => {
 const validateUser = async ({ email, password }) => {
     try {
         const { rows: [user] } = await pool.query('SELECT * FROM usuarios WHERE email = $1', [email]);
-        if ( !user ) throw { message: 'User not found' };
-        
+        if ( !user ) {
+            const error = new Error(`User with email ${email} not found`);
+            error.status = 404;
+            throw error;
+        }
+
         const isPasswordMatch = bcrypt.compareSync( password, user.password );
-        if ( !isPasswordMatch ) throw { message: 'Invalid credentials' };
-        
+        if ( !isPasswordMatch ) {
+            const error = new Error(`Invalid credentials`);
+            error.status = 401;
+            throw error;
+        }
+
         return user.email;
     } catch (error) {
         throw error;
